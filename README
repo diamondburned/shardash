@@ -1,0 +1,13 @@
+―❤―▶ ./hash < test_input.cpp
+FA2M ALSF OZ6U C6PK 6YD6 573
+
+―❤―▶ ./check FA2M ALSF OZ6U C6PK 6YD6 573 < test_input.cpp
+
+―❤―▶ ./check FA2M ALSF AZ6U C6PK 6YD6 573 < test_input.cpp
+NO
+
+  q.push({0, s});
+  auto relax = [&](int i, ll cap, ll cost, int dir) {
+  ll val = di - pi[i] + cost;
+
+exit status 1

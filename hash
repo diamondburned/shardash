@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+chunks=32
+
+main() {
+	h=$(shardash)
+	for ((i = 0; i < ${#h}; i += 4)); do
+		echo -n ${h:$i:4}
+		if (( i < ${#h} - 4 )); then
+			echo -n ' '
+		fi
+	done
+	echo
+}
+
+shardash() {
+	file=$(cat | preprocess)
+	IFS=$'\n' lines=( $file )
+
+	for ((i=0; i<chunks; i++)); do
+		# Calculate the chunk size.
+		chunkSize=$(( ${#lines[@]} / chunks + 1 ))
+		# Calculate the start index of the chunk.
+		start=$((i * chunkSize))
+		# Get the chunk.
+		chunk=${lines[@]:$start:$chunkSize}
+		if [[ -z "$chunk" ]]; then
+			break
+		fi
+		# Calculate the hash for the chunk.
+		echo -n $(hash <<< "$chunk" | head -c1)
+	done
+}
+
+preprocess() {
+	perl -0777 \
+		-pe 's/^\s*//gm;' \
+		-pe 's/\s*\/\/.*//gm;' \
+		-pe 's/\n\n/\n/gm;'
+}
+
+hash() {
+	sha256sum - | cut -f1 -d' ' | xxd -r -p | base32 -w0
+}
+
+main "$@"

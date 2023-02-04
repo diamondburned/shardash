@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+chunks=32
+
+main() {
+	hash="${*}"
+	hash="${hash// /}"
+	check "$hash"
+}
+
+check() {
+	expect=$1
+	file=$(cat | preprocess)
+	IFS=$'\n' lines=( $file )
+
+	for ((i = 0; i < chunks; i++)); do
+		size=$[ ${#lines[@]} / chunks + 1 ]
+		start=$[ i * size ]
+		chunk=${lines[@]:$start:$size}
+		if [[ -z "$chunk" ]]; then
+			break
+		fi
+
+		e=${expect:$i:1}
+		g=$(hash <<< "$chunk" | head -c1)
+		if [[ "$g" != "$e" ]]; then
+			echo "NO"
+			echo
+			for ((i = start; i < start + size; i++)); do
+				echo "  ${lines[$i]}"
+			done
+			echo
+			return 1
+		fi
+	done
+}
+
+preprocess() {
+	perl -0777 \
+		-pe 's/^\s*//gm;' \
+		-pe 's/\s*\/\/.*//gm;' \
+		-pe 's/\n\n/\n/gm;'
+}
+
+hash() {
+	sha256sum - | cut -f1 -d' ' | xxd -r -p | base32 -w0
+}
+
+main "$@"
