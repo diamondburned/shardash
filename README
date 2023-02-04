@@ -1,9 +1,9 @@
-―❤―▶ ./hash < test_input.cpp
+―❤―▶ ./hash < test_input.dat
 FA2M ALSF OZ6U C6PK 6YD6 573
 
-―❤―▶ ./check FA2M ALSF OZ6U C6PK 6YD6 573 < test_input.cpp
+―❤―▶ ./check FA2M ALSF OZ6U C6PK 6YD6 573 < test_input.dat
 
-―❤―▶ ./check FA2M ALSF AZ6U C6PK 6YD6 573 < test_input.cpp
+―❤―▶ ./check FA2M ALSF AZ6U C6PK 6YD6 573 < test_input.dat
 NO
 
   q.push({0, s});
